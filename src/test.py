@@ -1,6 +1,7 @@
 import tabu
 import numpy as np
-from src.k_medoids import KMedoids
+from k_medoids import KMedoids
+from mean_shift import MeanShift
 
 
 def test_points(layers=3, layer_distance=0.1, initial_side_length=0.5):
@@ -17,7 +18,9 @@ def test_points(layers=3, layer_distance=0.1, initial_side_length=0.5):
 if __name__ == '__main__':
     data_set = test_points()
     k_medoids = KMedoids(k=4, data_matrix=data_set)
+    mean_shift = MeanShift(k=4, data_matrix=data_set)
     tabu = tabu.TabuSampler()
-    matrix = np.ones((10, 10))
-    samples = tabu.sample_qubo(k_medoids.matrix)
+    samples = tabu.sample_qubo(mean_shift.matrix, timeout=5000)
+    ground_truth_state = np.array([0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0])
+    print(ground_truth_state @ mean_shift.matrix @ ground_truth_state)
     print(samples)
